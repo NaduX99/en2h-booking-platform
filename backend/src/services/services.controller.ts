@@ -16,6 +16,7 @@ import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { ServicesService } from './services.service';
 import { ServiceQueryDto } from './dto/service-query.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('services')
 @UseGuards(JwtAuthGuard)
@@ -25,6 +26,12 @@ export class ServicesController {
     ) { }
 
     @Post()
+    @Throttle({
+        default: {
+            limit: 20,
+            ttl: 60_000,
+        },
+    })
     create(
         @Body()
         createServiceDto: CreateServiceDto,

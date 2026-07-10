@@ -15,6 +15,8 @@ import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { BookingQueryDto } from './dto/booking-query.dto';
+import { Throttle } from '@nestjs/throttler';
+
 @Controller('bookings')
 export class BookingsController {
     constructor(
@@ -24,6 +26,13 @@ export class BookingsController {
 
     // Public route
     @Post()
+    @Throttle({
+        default: {
+            limit: 10,
+            ttl: 60_000,
+            blockDuration: 120_000,
+        },
+    })
     create(
         @Body()
         createBookingDto: CreateBookingDto,
