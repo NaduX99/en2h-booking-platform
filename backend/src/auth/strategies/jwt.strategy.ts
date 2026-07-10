@@ -28,12 +28,18 @@ export class JwtStrategy extends PassportStrategy(
 
             secretOrKey:
                 configService.getOrThrow<string>(
-                    'JWT_SECRET',
+                    'JWT_ACCESS_SECRET',
                 ),
         });
     }
 
     async validate(payload: JwtPayload) {
+        if (payload.tokenType !== 'access') {
+            throw new UnauthorizedException(
+                'Invalid access token',
+            );
+        }
+
         const user = await this.usersService.findById(
             payload.sub,
         );

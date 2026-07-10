@@ -12,6 +12,8 @@ import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { LoginDto } from './dto/login.dto';
+import { LogoutDto } from './dto/logout.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
@@ -50,6 +52,39 @@ export class AuthController {
         @Body() loginDto: LoginDto,
     ) {
         return this.authService.login(loginDto);
+    }
+
+    @Post('refresh')
+    @HttpCode(HttpStatus.OK)
+    @Throttle({
+        default: {
+            limit: 10,
+            ttl: 60_000,
+            blockDuration: 120_000,
+        },
+    })
+    refresh(
+        @Body() dto: RefreshTokenDto,
+    ) {
+        return this.authService.refresh(
+            dto.refreshToken,
+        );
+    }
+
+    @Post('logout')
+    @HttpCode(HttpStatus.OK)
+    @Throttle({
+        default: {
+            limit: 10,
+            ttl: 60_000,
+        },
+    })
+    logout(
+        @Body() dto: LogoutDto,
+    ) {
+        return this.authService.logout(
+            dto.refreshToken,
+        );
     }
 
     @Get('profile')

@@ -30,6 +30,14 @@ export class User {
     })
     passwordHash: string;
 
+    @Column({
+        name: 'refresh_token_hash',
+        type: 'varchar',
+        nullable: true,
+        select: false,
+    })
+    refreshTokenHash: string | null;
+
     @CreateDateColumn({
         name: 'created_at',
     })
