@@ -1,7 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class AppService {
+  constructor(
+    private readonly dataSource: DataSource,
+  ) { }
+
   getApiInfo() {
     return {
       success: true,
@@ -10,12 +18,21 @@ export class AppService {
     };
   }
 
-  getHealth() {
-    return {
-      success: true,
-      status: 'ok',
-      message: 'API is running',
-      timestamp: new Date().toISOString(),
-    };
+  async getHealth() {
+    try {
+      await this.dataSource.query('SELECT 1');
+
+      return {
+        success: true,
+        status: 'ok',
+        api: 'running',
+        database: 'connected',
+        timestamp: new Date().toISOString(),
+      };
+    } catch {
+      throw new ServiceUnavailableException(
+        'Database connection is unavailable',
+      );
+    }
   }
 }
