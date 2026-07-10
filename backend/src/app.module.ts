@@ -42,7 +42,7 @@ import { BookingsModule } from './bookings/bookings.module';
 
         autoLoadEntities: true,
 
-        synchronize: true,
+        synchronize: false,
 
         logging: false,
       }),
