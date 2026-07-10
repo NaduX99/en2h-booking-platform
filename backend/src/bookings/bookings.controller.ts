@@ -6,6 +6,7 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Query,
     UseGuards,
 } from '@nestjs/common';
 
@@ -13,7 +14,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
-
+import { BookingQueryDto } from './dto/booking-query.dto';
 @Controller('bookings')
 export class BookingsController {
     constructor(
@@ -35,8 +36,13 @@ export class BookingsController {
     // Protected route
     @Get()
     @UseGuards(JwtAuthGuard)
-    findAll() {
-        return this.bookingsService.findAll();
+    findAll(
+        @Query()
+        query: BookingQueryDto,
+    ) {
+        return this.bookingsService.findAll(
+            query,
+        );
     }
 
     // Protected route

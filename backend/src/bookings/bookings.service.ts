@@ -4,13 +4,15 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
+
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueryFailedError, Repository } from 'typeorm';
+import { Brackets, QueryFailedError, Repository } from 'typeorm';
 
 import { ServicesService } from '../services/services.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { Booking } from './entities/booking.entity';
 import { BookingStatus } from './enums/booking-status.enum';
+import { BookingQueryDto } from './dto/booking-query.dto';
 
 @Injectable()
 export class BookingsService {
@@ -89,23 +91,86 @@ export class BookingsService {
         }
     }
 
-    async findAll() {
-        const bookings =
-            await this.bookingsRepository.find({
-                relations: {
-                    service: true,
+    async findAll(query: BookingQueryDto) {
+        const page = query.page ?? 1;
+        const limit = query.limit ?? 10;
+
+        const queryBuilder =
+            this.bookingsRepository
+                .createQueryBuilder('booking')
+                .leftJoinAndSelect(
+                    'booking.service',
+                    'service',
+                )
+                .orderBy(
+                    'booking.createdAt',
+                    'DESC',
+                )
+                .skip((page - 1) * limit)
+                .take(limit);
+
+        if (query.status) {
+            queryBuilder.andWhere(
+                'booking.status = :status',
+                {
+                    status: query.status,
                 },
-                order: {
-                    createdAt: 'DESC',
+            );
+        }
+
+        if (query.serviceId) {
+            queryBuilder.andWhere(
+                'booking.serviceId = :serviceId',
+                {
+                    serviceId: query.serviceId,
                 },
-            });
+            );
+        }
+
+        if (query.search?.trim()) {
+            const search = `%${query.search
+                .trim()
+                .toLowerCase()}%`;
+
+            queryBuilder.andWhere(
+                new Brackets((qb) => {
+                    qb.where(
+                        'LOWER(booking.customerName) LIKE :search',
+                        { search },
+                    )
+                        .orWhere(
+                            'LOWER(booking.customerEmail) LIKE :search',
+                            { search },
+                        )
+                        .orWhere(
+                            'LOWER(booking.customerPhone) LIKE :search',
+                            { search },
+                        )
+                        .orWhere(
+                            'LOWER(service.title) LIKE :search',
+                            { search },
+                        );
+                }),
+            );
+        }
+
+        const [bookings, total] =
+            await queryBuilder.getManyAndCount();
 
         return {
             success: true,
             data: bookings,
+            meta: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+                hasNextPage:
+                    page < Math.ceil(total / limit),
+                hasPreviousPage: page > 1,
+            },
         };
     }
-
     async findOne(id: string) {
         const booking =
             await this.bookingsRepository.findOne({
