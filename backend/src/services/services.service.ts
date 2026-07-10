@@ -116,4 +116,37 @@ export class ServicesService {
             message: 'Service deleted successfully',
         };
     }
+
+    async findEntityById(id: string) {
+        const service =
+            await this.servicesRepository.findOne({
+                where: { id },
+            });
+
+        if (!service) {
+            throw new NotFoundException(
+                'Service not found',
+            );
+        }
+
+        return service;
+    }
+
+    async findActiveEntityById(id: string) {
+        const service =
+            await this.servicesRepository.findOne({
+                where: {
+                    id,
+                    isActive: true,
+                },
+            });
+
+        if (!service) {
+            throw new NotFoundException(
+                'Active service not found',
+            );
+        }
+
+        return service;
+    }
 }
