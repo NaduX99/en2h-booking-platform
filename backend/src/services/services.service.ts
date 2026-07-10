@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { Service } from './entities/service.entity';
+import { ServiceQueryDto } from './dto/service-query.dto';
 
 @Injectable()
 export class ServicesService {
@@ -32,19 +33,59 @@ export class ServicesService {
         };
     }
 
-    async findAll() {
-        const services = await this.servicesRepository.find({
-            order: {
-                createdAt: 'DESC',
-            },
-        });
+    async findAll(query: ServiceQueryDto) {
+        const page = query.page ?? 1;
+        const limit = query.limit ?? 10;
+
+        const queryBuilder =
+            this.servicesRepository
+                .createQueryBuilder('service')
+                .orderBy('service.createdAt', 'DESC')
+                .skip((page - 1) * limit)
+                .take(limit);
+
+        if (query.search?.trim()) {
+            const search = `%${query.search
+                .trim()
+                .toLowerCase()}%`;
+
+            queryBuilder.andWhere(
+                `(
+        LOWER(service.title) LIKE :search
+        OR LOWER(service.description) LIKE :search
+      )`,
+                { search },
+            );
+        }
+
+        if (query.isActive !== undefined) {
+            queryBuilder.andWhere(
+                'service.isActive = :isActive',
+                {
+                    isActive: query.isActive,
+                },
+            );
+        }
+
+        const [services, total] =
+            await queryBuilder.getManyAndCount();
+
+        const totalPages =
+            Math.ceil(total / limit);
 
         return {
             success: true,
             data: services,
+            meta: {
+                page,
+                limit,
+                total,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1,
+            },
         };
     }
-
     async findOne(id: string) {
         const service =
             await this.servicesRepository.findOne({

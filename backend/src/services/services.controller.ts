@@ -7,6 +7,7 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Query,
     UseGuards,
 } from '@nestjs/common';
 
@@ -14,6 +15,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { ServicesService } from './services.service';
+import { ServiceQueryDto } from './dto/service-query.dto';
 
 @Controller('services')
 @UseGuards(JwtAuthGuard)
@@ -33,8 +35,10 @@ export class ServicesController {
     }
 
     @Get()
-    findAll() {
-        return this.servicesService.findAll();
+    findAll(
+        @Query() query: ServiceQueryDto,
+    ) {
+        return this.servicesService.findAll(query);
     }
 
     @Get(':id')
