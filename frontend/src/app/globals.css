@@ -1,0 +1,127 @@
+@import '../styles/tokens.css';
+@import '../styles/animations.css';
+@import '../styles/components.css';
+@import '../styles/responsive.css';
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--body-md-size);
+  line-height: var(--body-md-line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100dvh;
+}
+
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+p {
+  color: var(--color-text-secondary);
+}
+
+/* ── Skip link ── */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: var(--space-4);
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  z-index: 9999;
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* ── React Toastify AETHER overrides ── */
+.Toastify__toast-container {
+  --toastify-font-family: var(--font-body);
+}
+
+.Toastify__toast {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card) !important;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.Toastify__toast--success {
+  border-color: var(--color-completed-border);
+}
+
+.Toastify__toast--error {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.Toastify__toast--warning {
+  border-color: var(--color-pending-border);
+}
+
+.Toastify__toast--info {
+  border-color: var(--color-confirmed-border);
+}
+
+.Toastify__progress-bar {
+  background: var(--color-secondary);
+}
+
+.Toastify__progress-bar--success {
+  background: var(--color-success);
+}
+
+.Toastify__progress-bar--error {
+  background: var(--color-danger);
+}
+
+.Toastify__close-button {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1;
+}

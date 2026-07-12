@@ -1,0 +1,140 @@
+:root {
+  color-scheme: dark;
+
+  /* ── Brand palette ── */
+  --color-primary: #C5A67C;
+  --color-secondary: #ffffff;
+  --color-accent: #C5A67C;
+
+  /* ── Backgrounds ── */
+  --color-background: #050505;
+  --color-surface: #141416;
+  --color-surface-hover: #1d1d20;
+  --color-surface-elevated: #27272a;
+
+  /* ── Text ── */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+
+  /* ── Borders ── */
+  --color-border: #333333;
+  --color-border-strong: #444444;
+
+  /* ── Action (CTA) ── */
+  --color-action-bg: #C5A67C;
+  --color-action-text: #050505;
+  --color-action-hover: #b8986e;
+
+  /* ── Semantic ── */
+  --color-danger: #ef4444;
+  --color-danger-bg: #18181b;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* ── Status badges ── */
+  --color-pending-bg: rgba(245, 158, 11, 0.12);
+  --color-pending-text: #f59e0b;
+  --color-pending-border: rgba(245, 158, 11, 0.25);
+  --color-confirmed-bg: rgba(59, 130, 246, 0.12);
+  --color-confirmed-text: #60a5fa;
+  --color-confirmed-border: rgba(59, 130, 246, 0.25);
+  --color-completed-bg: rgba(34, 197, 94, 0.12);
+  --color-completed-text: #4ade80;
+  --color-completed-border: rgba(34, 197, 94, 0.25);
+  --color-cancelled-bg: rgba(161, 161, 170, 0.10);
+  --color-cancelled-text: #a1a1aa;
+  --color-cancelled-border: rgba(161, 161, 170, 0.2);
+
+  /* ── Typography ── */
+  --font-display: var(--font-cormorant-garamond), 'Cormorant Garamond', serif;
+  --font-body: var(--font-inter), Inter, sans-serif;
+  --font-label: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+
+  --display-lg-size: 64px;
+  --display-lg-weight: 500;
+  --display-lg-line-height: 1.04;
+  --display-lg-letter-spacing: 0;
+
+  --body-md-size: 16px;
+  --body-md-weight: 400;
+  --body-md-line-height: 1.6;
+
+  --label-md-size: 12px;
+  --label-md-weight: 600;
+  --label-md-line-height: 1.2;
+
+  /* ── Spacing ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  --space-base: 8px;
+  --space-gap: 16px;
+  --space-card: 24px;
+  --space-section: 80px;
+
+  /* ── Radius ── */
+  --radius-sm: 2px;
+  --radius-card: 1px;
+  --radius-control: 4px;
+  --radius-pill: 9999px;
+
+  /* ── Layout ── */
+  --container-max: 1280px;
+  --header-height: 72px;
+  --sidebar-width: 280px;
+
+  /* ── Transitions ── */
+  --transition-fast: 160ms ease;
+  --transition-normal: 260ms ease;
+  --transition-slow: 520ms ease;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* ── Brand palette ── */
+  --color-primary: #ffffff;
+  --color-secondary: #000000;
+  --color-accent: #ffffff;
+
+  /* ── Backgrounds ── */
+  --color-background: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f4f4f5;
+  --color-surface-elevated: #efeff1;
+
+  /* ── Text ── */
+  --color-text-primary: #09090b;
+  --color-text-secondary: #3f3f46;
+  --color-text-muted: #71717a;
+
+  /* ── Borders ── */
+  --color-border: #e4e4e7;
+  --color-border-strong: #d4d4d8;
+
+  /* ── Action (CTA) ── */
+  --color-action-bg: #09090b;
+  --color-action-text: #ffffff;
+  --color-action-hover: #27272a;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
