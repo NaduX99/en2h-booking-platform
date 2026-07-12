@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import {
-  ThrottlerGuard,
-  ThrottlerModule,
-} from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
@@ -36,27 +33,15 @@ import { UsersModule } from './users/users.module';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres' as const,
 
-        host: configService.get<string>(
-          'DATABASE_HOST',
-        ),
+        host: configService.get<string>('DATABASE_HOST'),
 
-        port: Number(
-          configService.get<string>(
-            'DATABASE_PORT',
-          ),
-        ),
+        port: Number(configService.get<string>('DATABASE_PORT')),
 
-        username: configService.get<string>(
-          'DATABASE_USERNAME',
-        ),
+        username: configService.get<string>('DATABASE_USERNAME'),
 
-        password: configService.get<string>(
-          'DATABASE_PASSWORD',
-        ),
+        password: configService.get<string>('DATABASE_PASSWORD'),
 
-        database: configService.get<string>(
-          'DATABASE_NAME',
-        ),
+        database: configService.get<string>('DATABASE_NAME'),
 
         autoLoadEntities: true,
         synchronize: false,
@@ -80,4 +65,4 @@ import { UsersModule } from './users/users.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

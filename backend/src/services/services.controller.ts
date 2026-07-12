@@ -1,14 +1,14 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    ParseUUIDPipe,
-    Patch,
-    Post,
-    Query,
-    UseGuards,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -19,62 +19,71 @@ import { ServiceQueryDto } from './dto/service-query.dto';
 import { Throttle } from '@nestjs/throttler';
 
 @Controller('services')
-@UseGuards(JwtAuthGuard)
 export class ServicesController {
-    constructor(
-        private readonly servicesService: ServicesService,
-    ) { }
+  constructor(private readonly servicesService: ServicesService) {}
 
-    @Post()
-    @Throttle({
-        default: {
-            limit: 20,
-            ttl: 60_000,
-        },
-    })
-    create(
-        @Body()
-        createServiceDto: CreateServiceDto,
-    ) {
-        return this.servicesService.create(
-            createServiceDto,
-        );
-    }
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  @Throttle({
+    default: {
+      limit: 20,
+      ttl: 60_000,
+    },
+  })
+  create(
+    @Body()
+    createServiceDto: CreateServiceDto,
+  ) {
+    return this.servicesService.create(createServiceDto);
+  }
 
-    @Get()
-    findAll(
-        @Query() query: ServiceQueryDto,
-    ) {
-        return this.servicesService.findAll(query);
-    }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  findAll(@Query() query: ServiceQueryDto) {
+    return this.servicesService.findAll(query);
+  }
 
-    @Get(':id')
-    findOne(
-        @Param('id', ParseUUIDPipe)
-        id: string,
-    ) {
-        return this.servicesService.findOne(id);
-    }
+  @Get('public/active')
+  @Throttle({
+    default: {
+      limit: 50,
+      ttl: 60_000,
+    },
+  })
+  findPublicActive(@Query() query: ServiceQueryDto) {
+    return this.servicesService.findAll({
+      ...query,
+      isActive: true,
+    });
+  }
 
-    @Patch(':id')
-    update(
-        @Param('id', ParseUUIDPipe)
-        id: string,
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  findOne(
+    @Param('id', ParseUUIDPipe)
+    id: string,
+  ) {
+    return this.servicesService.findOne(id);
+  }
 
-        @Body()
-        updateServiceDto: UpdateServiceDto,
-    ) {
-        return this.servicesService.update(
-            id,
-            updateServiceDto,
-        );
-    }
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  update(
+    @Param('id', ParseUUIDPipe)
+    id: string,
 
-    @Delete(':id')
-    remove(
-        @Param('id', ParseUUIDPipe)
-        id: string,
-    ) {
-        return this.servicesService.remove(id);
-    }
+    @Body()
+    updateServiceDto: UpdateServiceDto,
+  ) {
+    return this.servicesService.update(id, updateServiceDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  remove(
+    @Param('id', ParseUUIDPipe)
+    id: string,
+  ) {
+    return this.servicesService.remove(id);
+  }
 }

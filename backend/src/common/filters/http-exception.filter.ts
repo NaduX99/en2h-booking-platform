@@ -19,7 +19,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const errorResponse: ErrorResponse = {
       success: false,
       statusCode: status,
-      message: exceptionResponse.message || exception.message || 'Internal server error',
+      message:
+        exceptionResponse.message ||
+        exception.message ||
+        'Internal server error',
       error: exceptionResponse.error || exception.name || 'Error',
       path: request.url,
       method: request.method,

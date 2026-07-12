@@ -7,10 +7,7 @@ import { BookingsService } from './bookings.service';
 import { Booking } from './entities/booking.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Booking]),
-    ServicesModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Booking]), ServicesModule],
 
   controllers: [BookingsController],
 
@@ -18,4 +15,4 @@ import { Booking } from './entities/booking.entity';
 
   exports: [BookingsService],
 })
-export class BookingsModule { }
+export class BookingsModule {}

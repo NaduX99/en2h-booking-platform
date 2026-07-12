@@ -6,11 +6,9 @@ import { ServicesController } from './services.controller';
 import { ServicesService } from './services.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Service]),
-  ],
+  imports: [TypeOrmModule.forFeature([Service])],
   controllers: [ServicesController],
   providers: [ServicesService],
   exports: [ServicesService],
 })
-export class ServicesModule { }
+export class ServicesModule {}

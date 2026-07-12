@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
-import {
-  ConfigModule,
-  ConfigService,
-} from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
@@ -23,27 +20,16 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
 
-      useFactory: (
-        configService: ConfigService,
-      ) => ({
-        secret:
-          configService.getOrThrow<string>(
-            'JWT_ACCESS_SECRET',
-          ),
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
       }),
     }),
   ],
 
   controllers: [AuthController],
 
-  providers: [
-    AuthService,
-    JwtStrategy,
-  ],
+  providers: [AuthService, JwtStrategy],
 
-  exports: [
-    JwtModule,
-    PassportModule,
-  ],
+  exports: [JwtModule, PassportModule],
 })
-export class AuthModule { }
+export class AuthModule {}

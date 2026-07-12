@@ -6,33 +6,25 @@ import { Service } from '../services/entities/service.entity';
 import { User } from '../users/entities/user.entity';
 
 const AppDataSource = new DataSource({
-    type: 'postgres',
+  type: 'postgres',
 
-    host: process.env.DATABASE_HOST,
+  host: process.env.DATABASE_HOST,
 
-    port: Number(
-        process.env.DATABASE_PORT ?? 5432,
-    ),
+  port: Number(process.env.DATABASE_PORT ?? 5432),
 
-    username: process.env.DATABASE_USERNAME,
+  username: process.env.DATABASE_USERNAME,
 
-    password: process.env.DATABASE_PASSWORD,
+  password: process.env.DATABASE_PASSWORD,
 
-    database: process.env.DATABASE_NAME,
+  database: process.env.DATABASE_NAME,
 
-    entities: [
-        User,
-        Service,
-        Booking,
-    ],
+  entities: [User, Service, Booking],
 
-    migrations: [
-        'src/database/migrations/*.ts',
-    ],
+  migrations: ['src/database/migrations/*.ts'],
 
-    synchronize: false,
+  synchronize: false,
 
-    logging: false,
+  logging: false,
 });
 
 export default AppDataSource;

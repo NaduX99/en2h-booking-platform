@@ -1,39 +1,43 @@
 import { Type } from 'class-transformer';
 import {
-    IsEnum,
-    IsInt,
-    IsOptional,
-    IsString,
-    IsUUID,
-    Max,
-    Min,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Max,
+  Min,
 } from 'class-validator';
 
 import { BookingStatus } from '../enums/booking-status.enum';
 
 export class BookingQueryDto {
-    @IsOptional()
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    page: number = 1;
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page: number = 1;
 
-    @IsOptional()
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    @Max(100)
-    limit: number = 10;
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  limit: number = 10;
 
-    @IsOptional()
-    @IsString()
-    search?: string;
+  @IsOptional()
+  @IsString()
+  search?: string;
 
-    @IsOptional()
-    @IsEnum(BookingStatus)
-    status?: BookingStatus;
+  @IsOptional()
+  @IsEnum(BookingStatus)
+  status?: BookingStatus;
 
-    @IsOptional()
-    @IsUUID()
-    serviceId?: string;
+  @IsOptional()
+  @IsUUID()
+  serviceId?: string;
+
+  @IsOptional()
+  @IsString()
+  customerEmail?: string;
 }

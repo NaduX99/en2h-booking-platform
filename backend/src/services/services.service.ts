@@ -1,7 +1,4 @@
-import {
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -12,182 +9,154 @@ import { ServiceQueryDto } from './dto/service-query.dto';
 
 @Injectable()
 export class ServicesService {
-    constructor(
-        @InjectRepository(Service)
-        private readonly servicesRepository: Repository<Service>,
-    ) { }
+  constructor(
+    @InjectRepository(Service)
+    private readonly servicesRepository: Repository<Service>,
+  ) {}
 
-    async create(createServiceDto: CreateServiceDto) {
-        const service = this.servicesRepository.create({
-            ...createServiceDto,
-            price: createServiceDto.price.toFixed(2),
-        });
+  async create(createServiceDto: CreateServiceDto) {
+    const service = this.servicesRepository.create({
+      ...createServiceDto,
+      price: createServiceDto.price.toFixed(2),
+    });
 
-        const savedService =
-            await this.servicesRepository.save(service);
+    const savedService = await this.servicesRepository.save(service);
 
-        return {
-            success: true,
-            message: 'Service created successfully',
-            data: savedService,
-        };
-    }
+    return {
+      success: true,
+      message: 'Service created successfully',
+      data: savedService,
+    };
+  }
 
-    async findAll(query: ServiceQueryDto) {
-        const page = query.page ?? 1;
-        const limit = query.limit ?? 10;
+  async findAll(query: ServiceQueryDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
 
-        const queryBuilder =
-            this.servicesRepository
-                .createQueryBuilder('service')
-                .orderBy('service.createdAt', 'DESC')
-                .skip((page - 1) * limit)
-                .take(limit);
+    const queryBuilder = this.servicesRepository
+      .createQueryBuilder('service')
+      .orderBy('service.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit);
 
-        if (query.search?.trim()) {
-            const search = `%${query.search
-                .trim()
-                .toLowerCase()}%`;
+    if (query.search?.trim()) {
+      const search = `%${query.search.trim().toLowerCase()}%`;
 
-            queryBuilder.andWhere(
-                `(
+      queryBuilder.andWhere(
+        `(
         LOWER(service.title) LIKE :search
         OR LOWER(service.description) LIKE :search
       )`,
-                { search },
-            );
-        }
-
-        if (query.isActive !== undefined) {
-            queryBuilder.andWhere(
-                'service.isActive = :isActive',
-                {
-                    isActive: query.isActive,
-                },
-            );
-        }
-
-        const [services, total] =
-            await queryBuilder.getManyAndCount();
-
-        const totalPages =
-            Math.ceil(total / limit);
-
-        return {
-            success: true,
-            data: services,
-            meta: {
-                page,
-                limit,
-                total,
-                totalPages,
-                hasNextPage: page < totalPages,
-                hasPreviousPage: page > 1,
-            },
-        };
-    }
-    async findOne(id: string) {
-        const service =
-            await this.servicesRepository.findOne({
-                where: { id },
-            });
-
-        if (!service) {
-            throw new NotFoundException(
-                'Service not found',
-            );
-        }
-
-        return {
-            success: true,
-            data: service,
-        };
+        { search },
+      );
     }
 
-    async update(
-        id: string,
-        updateServiceDto: UpdateServiceDto,
-    ) {
-        const service =
-            await this.servicesRepository.findOne({
-                where: { id },
-            });
-
-        if (!service) {
-            throw new NotFoundException(
-                'Service not found',
-            );
-        }
-
-        const updateData = {
-            ...updateServiceDto,
-            ...(updateServiceDto.price !== undefined && {
-                price: updateServiceDto.price.toFixed(2),
-            }),
-        };
-
-        Object.assign(service, updateData);
-
-        const updatedService =
-            await this.servicesRepository.save(service);
-
-        return {
-            success: true,
-            message: 'Service updated successfully',
-            data: updatedService,
-        };
+    if (query.isActive !== undefined) {
+      queryBuilder.andWhere('service.isActive = :isActive', {
+        isActive: query.isActive,
+      });
     }
 
-    async remove(id: string) {
-        const service =
-            await this.servicesRepository.findOne({
-                where: { id },
-            });
+    const [services, total] = await queryBuilder.getManyAndCount();
 
-        if (!service) {
-            throw new NotFoundException(
-                'Service not found',
-            );
-        }
+    const totalPages = Math.ceil(total / limit);
 
-        await this.servicesRepository.remove(service);
+    return {
+      success: true,
+      data: services,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  }
+  async findOne(id: string) {
+    const service = await this.servicesRepository.findOne({
+      where: { id },
+    });
 
-        return {
-            success: true,
-            message: 'Service deleted successfully',
-        };
+    if (!service) {
+      throw new NotFoundException('Service not found');
     }
 
-    async findEntityById(id: string) {
-        const service =
-            await this.servicesRepository.findOne({
-                where: { id },
-            });
+    return {
+      success: true,
+      data: service,
+    };
+  }
 
-        if (!service) {
-            throw new NotFoundException(
-                'Service not found',
-            );
-        }
+  async update(id: string, updateServiceDto: UpdateServiceDto) {
+    const service = await this.servicesRepository.findOne({
+      where: { id },
+    });
 
-        return service;
+    if (!service) {
+      throw new NotFoundException('Service not found');
     }
 
-    async findActiveEntityById(id: string) {
-        const service =
-            await this.servicesRepository.findOne({
-                where: {
-                    id,
-                    isActive: true,
-                },
-            });
+    const updateData = {
+      ...updateServiceDto,
+      ...(updateServiceDto.price !== undefined && {
+        price: updateServiceDto.price.toFixed(2),
+      }),
+    };
 
-        if (!service) {
-            throw new NotFoundException(
-                'Active service not found',
-            );
-        }
+    Object.assign(service, updateData);
 
-        return service;
+    const updatedService = await this.servicesRepository.save(service);
+
+    return {
+      success: true,
+      message: 'Service updated successfully',
+      data: updatedService,
+    };
+  }
+
+  async remove(id: string) {
+    const service = await this.servicesRepository.findOne({
+      where: { id },
+    });
+
+    if (!service) {
+      throw new NotFoundException('Service not found');
     }
+
+    await this.servicesRepository.remove(service);
+
+    return {
+      success: true,
+      message: 'Service deleted successfully',
+    };
+  }
+
+  async findEntityById(id: string) {
+    const service = await this.servicesRepository.findOne({
+      where: { id },
+    });
+
+    if (!service) {
+      throw new NotFoundException('Service not found');
+    }
+
+    return service;
+  }
+
+  async findActiveEntityById(id: string) {
+    const service = await this.servicesRepository.findOne({
+      where: {
+        id,
+        isActive: true,
+      },
+    });
+
+    if (!service) {
+      throw new NotFoundException('Active service not found');
+    }
+
+    return service;
+  }
 }

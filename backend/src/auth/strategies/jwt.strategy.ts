@@ -1,59 +1,41 @@
-import {
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import {
-    ExtractJwt,
-    Strategy,
-} from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { UsersService } from '../../users/users.service';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(
-    Strategy,
-) {
-    constructor(
-        private readonly configService: ConfigService,
-        private readonly usersService: UsersService,
-    ) {
-        super({
-            jwtFromRequest:
-                ExtractJwt.fromAuthHeaderAsBearerToken(),
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
+  ) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 
-            ignoreExpiration: false,
+      ignoreExpiration: false,
 
-            secretOrKey:
-                configService.getOrThrow<string>(
-                    'JWT_ACCESS_SECRET',
-                ),
-        });
+      secretOrKey: configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
+    });
+  }
+
+  async validate(payload: JwtPayload) {
+    if (payload.tokenType !== 'access') {
+      throw new UnauthorizedException('Invalid access token');
     }
 
-    async validate(payload: JwtPayload) {
-        if (payload.tokenType !== 'access') {
-            throw new UnauthorizedException(
-                'Invalid access token',
-            );
-        }
+    const user = await this.usersService.findById(payload.sub);
 
-        const user = await this.usersService.findById(
-            payload.sub,
-        );
-
-        if (!user) {
-            throw new UnauthorizedException(
-                'User no longer exists',
-            );
-        }
-
-        return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-        };
+    if (!user) {
+      throw new UnauthorizedException('User no longer exists');
     }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    };
+  }
 }
